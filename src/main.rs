@@ -12,7 +12,8 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use petstore::domain::*;
 //use petstore::service;
-//use petstore::persistence;
+use petstore::persistence::PetsInMemory;
+use petstore::persistence::PersistsPets;
 
 #[derive(RustcEncodable, RustcDecodable)]
 struct Greeting {
@@ -21,29 +22,47 @@ struct Greeting {
 
 fn main() {
 
-    let greeting = Arc::new(Mutex::new(Greeting { msg: "Hello, World".to_string() }));
-    let greeting_clone = greeting.clone();
-
-    let pets = Arc::new(Mutex::new(HashMap::new()));
-    let pets_clone = pets.clone();
+    let pets_in_memory = Arc::new(Mutex::new(PetsInMemory::new()));
 
     let mut router = Router::new();
 
-    router.get("/pets", move |r: &mut Request| get_pets(r, &pets.lock().unwrap()), "get_pets");
-    router.post("/pets", move |r: &mut Request| set_pets(r, &mut pets_clone.lock().unwrap()), "set_pets");
+    {
+        let pets_in_memory_clone = pets_in_memory.clone();
+        router.get("/pets", move |r: &mut Request| get_pets(r, &pets_in_memory_clone.lock().unwrap()), "get_pets");
+    }
+
+    {
+        let pets_in_memory_clone = pets_in_memory.clone();
+        router.get("/pets/:pet_id", move |r: &mut Request| get_pet(r, &pets_in_memory_clone.lock().unwrap()), "get_pet");
+    }
+
+    {
+        let pets_in_memory_clone = pets_in_memory.clone();
+        router.post("/pets", move |r: &mut Request| set_pets(r, &mut pets_in_memory_clone.lock().unwrap()), "set_pets");
+    }
 
 
-    fn get_pets(request: &mut Request, pets: &HashMap<String, Pet>) -> IronResult<Response> {
-        let payload = json::encode(&pets).unwrap();
+    fn get_pets(request: &mut Request, pets_in_memory: &PetsInMemory) -> IronResult<Response> {
+        let payload = json::encode(&pets_in_memory.pets).unwrap();
         Ok(Response::with((status::Ok, payload)))
     }
 
-    // Receive a message by POST and play it back.
-    fn set_pets(request: &mut Request, pets: &mut HashMap<String, Pet>) -> IronResult<Response> {
+    fn get_pet(request: &mut Request, pets_in_memory: &PetsInMemory) -> IronResult<Response> {
+        println!("In get_pet()");
+        println!("{}", request.url);
+        let payload = json::encode(&pets_in_memory.get(&0_u32)).unwrap();
+        Ok(Response::with((status::Ok, payload)))
+    }
+
+    fn something(request: &mut Request, pets_in_memory: &PetsInMemory) -> IronResult<Response> {
+        Ok(Response::with((status::Ok)))
+    }
+
+    fn set_pets(request: &mut Request, pets_in_memory: &mut PetsInMemory) -> IronResult<Response> {
         let mut payload = String::new();
         request.body.read_to_string(&mut payload).unwrap();
-        let length = pets.len().to_string();
-        pets.insert(length, json::decode(&payload).unwrap());
+        let length = pets_in_memory.pets.len() as u32;
+        pets_in_memory.pets.insert(length, json::decode(&payload).unwrap());
         Ok(Response::with(status::Ok))
     }
 

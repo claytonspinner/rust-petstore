@@ -1,29 +1,29 @@
 // extern crate rustc_serialize; <- this can't work?, investigate later
 
 
-#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Clone, RustcEncodable, RustcDecodable)]
 pub struct Pet {
-    pub id: u32,
-    pub category: Category,
-    pub name: String,
-    pub photo_urls: Vec<String>,
-    pub tags: Vec<Tag>,
-    pub status: Status
+    id: u32,
+    category: Category,
+    name: String,
+    photo_urls: Vec<String>,
+    tags: Vec<Tag>,
+    status: Status
 }
 
-#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Clone, RustcEncodable, RustcDecodable)]
 pub struct Category {
-    pub id: u32,
-    pub name: String
+    id: u32,
+    name: String
 }
 
-#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Clone, RustcEncodable, RustcDecodable)]
 pub struct Tag {
-    pub id: u32,
-    pub name: String
+    id: u32,
+    name: String
 }
 
-#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Clone, RustcEncodable, RustcDecodable)]
 pub enum Status {
     Available,
     Pending,

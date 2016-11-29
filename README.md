@@ -1,5 +1,9 @@
 # Rust Pet Store App
 
+## Swagger Docs
+
+http://petstore.swagger.io/#
+
 ## Running It
 
     cargo run

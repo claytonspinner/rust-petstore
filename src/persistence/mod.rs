@@ -5,9 +5,9 @@ use std::collections::HashMap;
 pub trait PersistsPets {
     // CRUD operations
     fn create(&mut self, &pet: &Pet) -> u32;
-    fn get(&self, pet_id: &u32) -> Pet;
-    fn update(&mut self, pet: &Pet) -> Pet;
-    fn delete(&mut self, pet_id: &u32) -> u32;
+    fn get(&self, pet_id: &u32) -> Option<&Pet>;
+    fn update(&mut self, pet: &Pet) -> Option<&Pet>;
+    fn delete(&mut self, pet_id: &u32) -> Option<Pet>;
 
     // TODO complete the signatures for these
     fn find_by_status(&self);
@@ -34,21 +34,16 @@ impl PersistsPets for PetsInMemory {
         id
     }
 
-    fn get(&self, pet_id: &u32) -> Pet {
-        match (*self).pets.get(&pet_id) {
-            Some(pet) => (*pet).clone(),
-            _ => {
-                panic!("Failed to get Pet with ID {}", pet_id);
-            }
-        }
+    fn get(&self, pet_id: &u32) -> Option<&Pet> {
+        (*self).pets.get(pet_id).clone()
     }
 
-    fn update(&mut self, pet: &Pet) -> Pet {
+    fn update(&mut self, pet: &Pet) -> Option<&Pet> {
         unimplemented!()
     }
 
-    fn delete(&mut self, pet_id: &u32) -> u32 {
-        unimplemented!()
+    fn delete(&mut self, pet_id: &u32) -> Option<Pet> {
+        (*self).pets.remove(pet_id)
     }
 
     // TODO For now just return all pets

@@ -7,3 +7,10 @@ authors = ["Clayton Spinner <clayton.spinner@gmail.com>"]
 iron = "0.4.*"
 rustc-serialize = "*"
 router = "*"
+log = "*"
+# slog = "1.2"
+env_logger = "*"
+
+[[bin]]
+name = "main"
+doc = false

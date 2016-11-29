@@ -1,0 +1,111 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Rust Pet Store",
+		"_postman_id": "44ede384-600a-541f-215e-a4ea0357eb7b",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add pet",
+			"request": {
+				"url": "localhost:3000/pets",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"Dog\"\n    },\n    \"id\": 0,\n    \"name\": \"Muffins\",\n    \"photo_urls\": [],\n    \"status\": \"Available\",\n    \"tags\": []\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get all",
+			"request": {
+				"url": "localhost:3000/pets",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"Dog\"\n    },\n    \"id\": 0,\n    \"name\": \"Muffins\",\n    \"photo_urls\": [],\n    \"status\": \"Available\",\n    \"tags\": []\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get",
+			"request": {
+				"url": "localhost:3000/pets/0",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"Dog\"\n    },\n    \"id\": 0,\n    \"name\": \"Muffins\",\n    \"photo_urls\": [],\n    \"status\": \"Available\",\n    \"tags\": []\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "delete pet",
+			"request": {
+				"url": "localhost:3000/pets/0",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"Dog\"\n    },\n    \"id\": 0,\n    \"name\": \"Muffins\",\n    \"photo_urls\": [],\n    \"status\": \"Available\",\n    \"tags\": []\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get",
+			"request": {
+				"url": "localhost:3000/pets/0",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"Dog\"\n    },\n    \"id\": 0,\n    \"name\": \"Muffins\",\n    \"photo_urls\": [],\n    \"status\": \"Available\",\n    \"tags\": []\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

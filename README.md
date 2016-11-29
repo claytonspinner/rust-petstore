@@ -1,9 +1,15 @@
-# Rust Petstore App
+# Rust Pet Store App
 
-## Using PetsInMemory
+## Running It
 
-This worked fine. I defined a trait that is my interface for persistence and implemented it on a struct containing a HashMap that stores the pets.
+    cargo run
 
-## Adding second get call
+I also roll with traces and logging (only on main for now):
 
-I put {} everywhere and clone the thing, there has to be a better way.
+    RUST_BACKTRACE=1;RUST_LOG=main=debug cargo run
+
+## Postman collection
+
+`postman.json` can be run with newman. It adds a pet, gets the pet, deletes the pet, then gets the pet again.
+
+One thing to note is that when you get a pet that doesn't exist it returns `null`. This probably should be different.

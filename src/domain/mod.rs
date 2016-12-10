@@ -1,4 +1,4 @@
-// extern crate rustc_serialize; <- this can't work?, investigate later
+extern crate rustc_serialize;
 
 
 #[derive(Clone, RustcEncodable, RustcDecodable)]

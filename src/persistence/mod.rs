@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 pub trait PersistsPets {
     // CRUD operations
-    fn create(&mut self, &pet: &Pet) -> u32;
+    fn create(&mut self, pet: Pet) -> u32;
     fn get_all(&self) -> &HashMap<u32, Pet>;
     fn get(&self, pet_id: &u32) -> Option<&Pet>;
     fn update(&mut self, pet: Pet) -> Option<Pet>;
@@ -28,9 +28,10 @@ impl PetsInMemory {
 }
 
 impl PersistsPets for PetsInMemory {
-    fn create(&mut self, pet: &Pet) -> u32 {
+    fn create(&mut self, mut pet: Pet) -> u32 {
         let id: u32 = (*self).pets.len() as u32;
-        &self.pets.insert(id, (*pet).clone());
+        pet.id = id;
+        &self.pets.insert(id, (pet).clone());
 
         id
     }

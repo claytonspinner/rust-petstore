@@ -1,5 +1,6 @@
 extern crate rustc_serialize;
 
+use std::str::FromStr;
 
 #[derive(Clone, RustcEncodable, RustcDecodable)]
 pub struct Pet {
@@ -8,7 +9,7 @@ pub struct Pet {
     name: String,
     photo_urls: Vec<String>,
     tags: Vec<Tag>,
-    status: Status
+    pub status: Status
 }
 
 #[derive(Clone, RustcEncodable, RustcDecodable)]
@@ -23,9 +24,22 @@ pub struct Tag {
     name: String
 }
 
-#[derive(Clone, RustcEncodable, RustcDecodable)]
+#[derive(Clone, RustcEncodable, RustcDecodable, PartialEq)]
 pub enum Status {
     Available,
     Pending,
     Sold
+}
+
+impl FromStr for Status {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Status, ()> {
+        match s {
+            "Available" => Ok(Status::Available),
+            "Pending" => Ok(Status::Pending),
+            "Sold" => Ok(Status::Sold),
+            _ => Err(()),
+        }
+    }
 }

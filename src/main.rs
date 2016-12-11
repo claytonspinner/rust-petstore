@@ -50,6 +50,11 @@ fn main() {
 
     {
         let pet_controller_clone = pet_controller.clone();
+        router.get("/pets/findByStatus", move |r: &mut Request| pet_controller_clone.lock().unwrap().get_pets_by_status(r), "get_pets_by_status");
+    }
+
+    {
+        let pet_controller_clone = pet_controller.clone();
         router.post("/pets", move |r: &mut Request| pet_controller_clone.lock().unwrap().set_pet(r), "set_pet");
     }
 

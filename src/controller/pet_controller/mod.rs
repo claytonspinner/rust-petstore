@@ -1,17 +1,24 @@
 extern crate router;
 extern crate iron;
+extern crate urlencoded;
 
 use slog;
 
 use self::iron::prelude::*;
 use self::iron::status;
 use self::router::Router;
+use self::urlencoded::UrlEncodedQuery;
 use ::persistence::PersistsPets;
 use rustc_serialize::json;
 use std::io::Read;
 use std::sync::{Arc, Mutex};
 
+use std::collections::HashMap;
+use std::str::FromStr;
+use std::ops::Index;
+
 use domain::Pet;
+use domain::Status;
 
 pub struct PetControllerBuilder<T: PersistsPets> {
     logger: Option<slog::Logger>,
@@ -71,11 +78,33 @@ impl<T: PersistsPets> PetController<T> {
         Ok(Response::with((status::Ok, payload)))
     }
 
+    pub fn get_pets_by_status(&self, request: &mut Request) -> IronResult<Response> {
+        let parameters: &HashMap<String, Vec<String>> = match request.get_ref::<UrlEncodedQuery>() {
+            Ok(ref hashmap) => hashmap,
+            Err(ref e) => panic!("{:?}", e)
+        };
+
+        let mut statuses: Vec<&str> = (*parameters.get("status").unwrap()).index(0).split(",").collect();
+
+        let mut return_vec: Vec<Pet> = Vec::new();
+
+        for (pet_id, pet) in self.pet_persistence.lock().unwrap().get_all().iter() {
+            if statuses.iter().find(|&val| {
+                let status = Status::from_str(&*val).expect("Couldn't parse Status");
+                status == pet.status
+            }).is_some() {
+                return_vec.push(pet.clone());
+            }
+        }
+
+        Ok(Response::with((status::Ok, json::encode(&return_vec).unwrap())))
+    }
+
     pub fn set_pet(&self, request: &mut Request) -> IronResult<Response> {
         debug!(self.logger, "set_pet");
         let mut payload = String::new();
         request.body.read_to_string(&mut payload).unwrap();
-        let pets_id = &self.pet_persistence.lock().unwrap().create(&json::decode(&*payload).unwrap());
+        let pets_id = &self.pet_persistence.lock().unwrap().create(json::decode(&*payload).unwrap());
         Ok(Response::with((status::Ok, json::encode(&pets_id).unwrap())))
     }
 

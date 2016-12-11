@@ -2,12 +2,12 @@ use domain::Pet;
 
 use std::collections::HashMap;
 
-pub trait PersistsPets: 'static {
+pub trait PersistsPets {
     // CRUD operations
     fn create(&mut self, &pet: &Pet) -> u32;
     fn get_all(&self) -> &HashMap<u32, Pet>;
     fn get(&self, pet_id: &u32) -> Option<&Pet>;
-    fn update(&mut self, pet: &Pet) -> Option<&Pet>;
+    fn update(&mut self, pet: Pet) -> Option<Pet>;
     fn delete(&mut self, pet_id: &u32) -> Option<Pet>;
 
     // TODO complete the signatures for these
@@ -43,8 +43,9 @@ impl PersistsPets for PetsInMemory {
         (*self).pets.get(pet_id).clone()
     }
 
-    fn update(&mut self, pet: &Pet) -> Option<&Pet> {
-        unimplemented!()
+    fn update(&mut self, pet: Pet) -> Option<Pet> {
+        &self.pets.insert(pet.id, pet.clone());
+        Some(pet)
     }
 
     fn delete(&mut self, pet_id: &u32) -> Option<Pet> {

@@ -11,6 +11,8 @@ use rustc_serialize::json;
 use std::io::Read;
 use std::sync::{Arc, Mutex};
 
+use domain::Pet;
+
 pub struct PetControllerBuilder<T: PersistsPets> {
     logger: Option<slog::Logger>,
     pet_persistence: Option<Arc<Mutex<T>>>
@@ -75,6 +77,26 @@ impl<T: PersistsPets> PetController<T> {
         request.body.read_to_string(&mut payload).unwrap();
         let pets_id = &self.pet_persistence.lock().unwrap().create(&json::decode(&*payload).unwrap());
         Ok(Response::with((status::Ok, json::encode(&pets_id).unwrap())))
+    }
+
+    pub fn update_pet(&self, request: &mut Request) -> IronResult<Response> {
+        debug!(self.logger, "update_pet");
+        let mut payload = String::new();
+        request.body.read_to_string(&mut payload).unwrap();
+        let pet = self.pet_persistence.lock().unwrap().update(json::decode(&*payload).unwrap());
+        Ok(Response::with((status::Ok, json::encode(&pet).unwrap())))
+    }
+
+    pub fn update_pet_with_id(&self, request: &mut Request) -> IronResult<Response> {
+        debug!(self.logger, "update_pet_with_id");
+        let pet_id: u32 = (*request.extensions.get::<Router>().unwrap().find("pet_id").unwrap()).parse::<u32>().unwrap();
+
+        let mut payload = String::new();
+        request.body.read_to_string(&mut payload).unwrap();
+        let mut pet: Pet = json::decode(&*payload).unwrap();
+        pet.id = pet_id;
+        let pet = self.pet_persistence.lock().unwrap().update(pet);
+        Ok(Response::with((status::Ok, json::encode(&pet).unwrap())))
     }
 
     pub fn delete_pet(&self, request: &mut Request) -> IronResult<Response> {

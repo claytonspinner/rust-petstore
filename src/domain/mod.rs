@@ -3,7 +3,7 @@ extern crate rustc_serialize;
 
 #[derive(Clone, RustcEncodable, RustcDecodable)]
 pub struct Pet {
-    id: u32,
+    pub id: u32,
     category: Category,
     name: String,
     photo_urls: Vec<String>,
